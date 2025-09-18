@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Transfer Reminder for Direct Debits",
+  "description": "Enter debit amount and date; get a reminder a day before to top up your transaction account.",
+  "version": "0.1.0",
+  "action": {
+    "default_title": "Add Direct Debit Reminder",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "storage",
+    "alarms",
+    "notifications"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}
