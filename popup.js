@@ -46,7 +46,8 @@ function renderReminders(reminders) {
     const meta = document.createElement('div');
     meta.className = 'meta';
     const title = document.createElement('div');
-    title.textContent = `${formatCurrency(r.amount)} due on ${r.debitDate}`;
+    const descriptionText = r.description ? ` - ${r.description}` : '';
+    title.textContent = `${formatCurrency(r.amount)}${descriptionText} due on ${r.debitDate}`;
     const badge = document.createElement('span');
     badge.className = 'badge';
     const d = new Date(r.reminderAt);
@@ -75,10 +76,10 @@ function renderReminders(reminders) {
   }
 }
 
-async function addReminder(amount, debitDate, timeHHMM) {
+async function addReminder(amount, description, debitDate, timeHHMM) {
   const reminderAt = computeReminderTime(debitDate, timeHHMM);
   const id = `reminder-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-  const reminder = { id, amount, debitDate, reminderAt: reminderAt.toISOString() };
+  const reminder = { id, amount, description, debitDate, reminderAt: reminderAt.toISOString() };
   const reminders = await loadReminders();
   reminders.push(reminder);
   await saveReminders(reminders);
@@ -97,11 +98,12 @@ window.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('reminder-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const amount = parseFloat(document.getElementById('amount').value);
+    const description = document.getElementById('description').value.trim();
     const date = document.getElementById('date').value;
     const time = document.getElementById('time').value || '09:00';
     if (!Number.isFinite(amount) || amount <= 0) { alert('Enter a valid amount'); return; }
     if (!date) { alert('Pick a date'); return; }
-    await addReminder(amount, date, time);
+    await addReminder(amount, description, date, time);
     renderReminders(await loadReminders());
     e.target.reset();
     if (dateInput) {

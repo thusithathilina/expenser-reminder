@@ -16,6 +16,7 @@ function openReminderWindow(reminder) {
     const params = new URLSearchParams({
       id: reminder.id || '',
       amount: String(reminder.amount ?? ''),
+      description: String(reminder.description ?? ''),
       debitDate: String(reminder.debitDate ?? ''),
     }).toString();
     const url = chrome.runtime.getURL(`reminder.html?${params}`);
@@ -82,8 +83,9 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (!reminder) return;
 
   const amount = reminder.amount;
+  const description = reminder.description ? ` (${reminder.description})` : '';
   const title = 'Top up your transaction account';
-  const message = `Transfer at least ${amount} for debit on ${reminder.debitDate}.`;
+  const message = `Transfer at least ${amount}${description} for debit on ${reminder.debitDate}.`;
 
   chrome.notifications.create(`notif-${id}`, {
     type: 'basic',
